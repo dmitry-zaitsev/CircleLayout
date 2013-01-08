@@ -17,6 +17,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -45,6 +46,8 @@ public class CircleLayout extends ViewGroup {
 	private Canvas mDstCanvas;
 	private Xfermode mXfer;
 	private Paint mXferPaint;
+	
+	private View mMotionTarget;
 	
 	public CircleLayout(Context context) {
 		this(context, null);
@@ -285,6 +288,86 @@ public class CircleLayout extends ViewGroup {
 	}
 	
 	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mLayoutMode == LAYOUT_NORMAL) {
+			return super.dispatchTouchEvent(ev);
+		}
+		
+		final int action = ev.getAction();
+		final float x = ev.getX() - getWidth()/2f;
+		final float y = ev.getY() - getHeight()/2f;
+		
+		if(action == MotionEvent.ACTION_DOWN) {
+			
+			if(mMotionTarget != null) {
+				MotionEvent cancelEvent = MotionEvent.obtain(ev);
+				cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
+				
+				cancelEvent.setLocation(mMotionTarget.getLeft(), mMotionTarget.getTop());
+				
+				mMotionTarget.dispatchTouchEvent(cancelEvent);
+				
+				mMotionTarget = null;
+			}
+			
+			final float radius = (float) Math.sqrt(x*x + y*y);
+			
+			if(radius < mInnerRadius || radius > getWidth()/2f || radius > getHeight()/2f) {
+				return false;
+			}
+			
+			float angle = (float) Math.toDegrees(Math.atan2(y, x));
+			
+			if(angle < 0) angle += 360;
+			
+			final int childs = getChildCount();
+			
+			for(int i=0; i<childs; i++) {
+				final View child = getChildAt(i);
+				final LayoutParams lp = layoutParams(child);
+				
+				float startAngle = lp.startAngle % 360;
+				float endAngle = lp.endAngle % 360;
+				float touchAngle = angle;
+				
+				if(startAngle > endAngle) {
+					if(touchAngle < startAngle && touchAngle < endAngle) {
+						touchAngle += 360;
+					}
+						
+					endAngle += 360;
+				}
+				
+				if(startAngle <= touchAngle && endAngle >= touchAngle) {
+					ev.setLocation(child.getLeft(), child.getTop());
+					
+					boolean dispatched = child.dispatchTouchEvent(ev);
+					
+					if(dispatched) {
+						mMotionTarget = child;
+						
+						return true;
+					} else {
+						ev.setLocation(0f, 0f);
+						
+						return onTouchEvent(ev);
+					}
+				}
+			}
+		} else if(mMotionTarget != null) {
+			ev.setLocation(mMotionTarget.getLeft(), mMotionTarget.getTop());
+			
+			mMotionTarget.dispatchTouchEvent(ev);
+			
+			if(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+				mMotionTarget = null;
+			}
+		}
+		
+		return onTouchEvent(ev);
+	}
+	
+	@Override
 	protected void dispatchDraw(Canvas canvas) {
 		if(mLayoutMode == LAYOUT_NORMAL) {
 			super.dispatchDraw(canvas);
@@ -306,8 +389,8 @@ public class CircleLayout extends ViewGroup {
 			
 			LayoutParams lp = layoutParams(child);
 			
-			mSrcCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
-			mDstCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+			mSrcCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+			mDstCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 			
 			mSrcCanvas.save();
 			
