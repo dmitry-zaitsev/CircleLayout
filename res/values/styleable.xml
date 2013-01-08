@@ -5,7 +5,6 @@
         <attr name="innerRadius" format="dimension" />
         <attr name="divider" format="reference|color" />
         <attr name="innerCircle" format="reference|color" />
-        <attr name="selector" format="reference|color" />
         <attr name="angleOffset" format="float" />
         <attr name="layoutMode">
             <enum name="normal" value="1" />

@@ -1,5 +1,6 @@
 package ru.biovamp.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,8 +14,8 @@ import android.graphics.RectF;
 import android.graphics.Xfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -33,7 +34,6 @@ public class CircleLayout extends ViewGroup {
 	private int mInnerRadius;
 	
 	private Paint mDividerPaint;
-	private Paint mSelectorPaint;
 	private Paint mCirclePaint;
 	
 	private RectF mBounds = new RectF();
@@ -49,18 +49,17 @@ public class CircleLayout extends ViewGroup {
 		this(context, null);
 	}
 	
+	@SuppressLint("NewApi")
 	public CircleLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
 		mDividerPaint = new Paint();
-		mSelectorPaint = new Paint();
 		mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		
 		TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircleLayout, 0, 0);
 		
 		try {
 			int dividerColor = a.getColor(R.styleable.CircleLayout_divider, android.R.color.darker_gray);
-			int selectorColor = a.getColor(R.styleable.CircleLayout_selector, android.R.color.white);
 			mInnerCircle = a.getDrawable(R.styleable.CircleLayout_innerCircle);
 			
 			if(mInnerCircle instanceof ColorDrawable) {
@@ -69,7 +68,6 @@ public class CircleLayout extends ViewGroup {
 			}
 			
 			mDividerPaint.setColor(dividerColor);
-			mSelectorPaint.setColor(selectorColor);
 			
 			mAngleOffset = a.getFloat(R.styleable.CircleLayout_angleOffset, 90f);
 			mDividerWidth = a.getDimensionPixelSize(R.styleable.CircleLayout_dividerWidth, 1);
@@ -84,6 +82,11 @@ public class CircleLayout extends ViewGroup {
 		
 		mXfer = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 		mXferPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		
+		//Turn off hardware acceleration if possible
+		if(Build.VERSION.SDK_INT >= 11) {
+			setLayerType(LAYER_TYPE_SOFTWARE, null);
+		}
 	}
 	
 	public void setLayoutMode(int mode) {
@@ -232,8 +235,8 @@ public class CircleLayout extends ViewGroup {
 			final float angle = 360/totalWeight * lp.weight;
 			
 			final float centerAngle = startAngle + angle/2f;
-			final int x = (int) (radius * FloatMath.cos((float) Math.toRadians(centerAngle))) + width/2;
-			final int y = (int) (radius * FloatMath.sin((float) Math.toRadians(centerAngle))) + height/2;
+			final int x = (int) (radius * Math.cos(Math.toRadians(centerAngle))) + width/2;
+			final int y = (int) (radius * Math.sin(Math.toRadians(centerAngle))) + height/2;
 			
 			final int childWidth = child.getMeasuredWidth();
 			final int childHeight = child.getMeasuredHeight();
@@ -276,10 +279,12 @@ public class CircleLayout extends ViewGroup {
 	
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
+		/*
 		if(mLayoutMode == LAYOUT_NORMAL) {
 			super.dispatchDraw(canvas);
 			return;
 		}
+		*/
 		
 		if(mSrc == null || mDst == null || mSrc.isRecycled() || mDst.isRecycled()) {
 			return;
@@ -313,8 +318,8 @@ public class CircleLayout extends ViewGroup {
 			canvas.drawBitmap(mDst, 0f, 0f, null);
 			
 			canvas.drawLine(halfWidth, halfHeight,
-					radius*FloatMath.cos((float) Math.toRadians(lp.startAngle)) + halfWidth,
-					radius*FloatMath.sin((float) Math.toRadians(lp.startAngle)) + halfHeight,
+					radius * (float) Math.cos(Math.toRadians(lp.startAngle)) + halfWidth,
+					radius * (float) Math.sin(Math.toRadians(lp.startAngle)) + halfHeight,
 					mDividerPaint);
 		}
 		
