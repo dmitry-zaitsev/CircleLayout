@@ -69,7 +69,6 @@ public class CircleLayout extends ViewGroup {
 			if(mInnerCircle instanceof ColorDrawable) {
 				int innerColor = a.getColor(R.styleable.CircleLayout_innerCircle, android.R.color.white);
 				mCirclePaint.setColor(innerColor);
-				mCirclePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 			}
 			
 			mDividerPaint.setColor(dividerColor);
@@ -84,7 +83,6 @@ public class CircleLayout extends ViewGroup {
 		}
 		
 		mDividerPaint.setStrokeWidth(mDividerWidth);
-		mDividerPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 		
 		mXfer = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 		mXferPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
