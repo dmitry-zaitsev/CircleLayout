@@ -2,15 +2,17 @@ package ru.biovamp.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.Region.Op;
+import android.graphics.Xfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.View;
@@ -36,7 +38,12 @@ public class CircleLayout extends ViewGroup {
 	
 	private RectF mBounds = new RectF();
 	
-	private Path mDrawingPath = new Path();
+	private Bitmap mDst;
+	private Bitmap mSrc;
+	private Canvas mSrcCanvas;
+	private Canvas mDstCanvas;
+	private Xfermode mXfer;
+	private Paint mXferPaint;
 	
 	public CircleLayout(Context context) {
 		this(context, null);
@@ -75,9 +82,8 @@ public class CircleLayout extends ViewGroup {
 		
 		mDividerPaint.setStrokeWidth(mDividerWidth);
 		
-		if(Build.VERSION.SDK_INT >= 11) {
-			setLayerType(LAYER_TYPE_SOFTWARE, null);
-		}
+		mXfer = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+		mXferPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	}
 	
 	public void setLayoutMode(int mode) {
@@ -167,8 +173,27 @@ public class CircleLayout extends ViewGroup {
 		// Check against our minimum height and width
 		maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
 		maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+		
+		int width = resolveSize(maxWidth, widthMeasureSpec);
+		int height = resolveSize(maxHeight, heightMeasureSpec);
 
-		setMeasuredDimension(resolveSize(maxWidth, widthMeasureSpec), resolveSize(maxHeight, heightMeasureSpec));
+		setMeasuredDimension(width, height);
+		
+		if(mSrc != null && (mSrc.getWidth() != width || mSrc.getHeight() != height)) {
+			mDst.recycle();
+			mSrc.recycle();
+			
+			mDst = null;
+			mSrc = null;
+		}
+		
+		if(mSrc == null) {
+			mSrc = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+			mDst = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+			
+			mSrcCanvas = new Canvas(mSrc);
+			mDstCanvas = new Canvas(mDst);
+		}
 	}
 	
 	private LayoutParams layoutParams(View child) {
@@ -256,6 +281,10 @@ public class CircleLayout extends ViewGroup {
 			return;
 		}
 		
+		if(mSrc == null || mDst == null || mSrc.isRecycled() || mDst.isRecycled()) {
+			return;
+		}
+		
 		final int childs = getChildCount();
 		final float halfWidth = getWidth()/2f;
 		final float halfHeight = getHeight()/2f;
@@ -267,17 +296,21 @@ public class CircleLayout extends ViewGroup {
 			
 			LayoutParams lp = layoutParams(child);
 			
-			canvas.save();
+			mSrcCanvas.drawColor(Color.TRANSPARENT);
+			mDstCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 			
-			mDrawingPath.rewind();
-			mDrawingPath.moveTo(halfWidth, halfHeight);
-			mDrawingPath.arcTo(mBounds, lp.startAngle, lp.endAngle - lp.startAngle);
+			child.draw(mSrcCanvas);
 			
-			canvas.clipPath(mDrawingPath, Op.REPLACE);
+			mXferPaint.setXfermode(null);
+			mXferPaint.setColor(Color.BLACK);
+
+			float sweepAngle = (lp.endAngle - lp.startAngle) % 360;
 			
-			child.draw(canvas);
+			mDstCanvas.drawArc(mBounds, lp.startAngle, sweepAngle, true, mXferPaint);
+			mXferPaint.setXfermode(mXfer);
+			mDstCanvas.drawBitmap(mSrc, 0f, 0f, mXferPaint);
 			
-			canvas.restore();
+			canvas.drawBitmap(mDst, 0f, 0f, null);
 			
 			canvas.drawLine(halfWidth, halfHeight,
 					radius*FloatMath.cos((float) Math.toRadians(lp.startAngle)) + halfWidth,
