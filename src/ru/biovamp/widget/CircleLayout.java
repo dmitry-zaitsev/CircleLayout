@@ -12,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Xfermode;
+import android.graphics.Region.Op;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -53,7 +54,7 @@ public class CircleLayout extends ViewGroup {
 	public CircleLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		mDividerPaint = new Paint();
+		mDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		
 		TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircleLayout, 0, 0);
@@ -279,10 +280,12 @@ public class CircleLayout extends ViewGroup {
 	
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
+		/*
 		if(mLayoutMode == LAYOUT_NORMAL) {
 			super.dispatchDraw(canvas);
 			return;
 		}
+		*/
 		
 		if(mSrc == null || mDst == null || mSrc.isRecycled() || mDst.isRecycled()) {
 			return;
@@ -299,10 +302,22 @@ public class CircleLayout extends ViewGroup {
 			
 			LayoutParams lp = layoutParams(child);
 			
-			mSrcCanvas.drawColor(Color.TRANSPARENT);
+			mSrcCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 			mDstCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 			
+			mSrcCanvas.save();
+			
+			int childLeft = child.getLeft();
+			int childTop = child.getTop();
+			int childRight = child.getRight();
+			int childBottom = child.getBottom();
+			
+			mSrcCanvas.clipRect(childLeft, childTop, childRight, childBottom, Op.REPLACE);
+			mSrcCanvas.translate(childLeft, childTop);
+			
 			child.draw(mSrcCanvas);
+			
+			mSrcCanvas.restore();
 			
 			mXferPaint.setXfermode(null);
 			mXferPaint.setColor(Color.BLACK);
@@ -319,6 +334,13 @@ public class CircleLayout extends ViewGroup {
 					radius * (float) Math.cos(Math.toRadians(lp.startAngle)) + halfWidth,
 					radius * (float) Math.sin(Math.toRadians(lp.startAngle)) + halfHeight,
 					mDividerPaint);
+			
+			if(i == childs-1) {
+				canvas.drawLine(halfWidth, halfHeight,
+						radius * (float) Math.cos(Math.toRadians(lp.endAngle)) + halfWidth,
+						radius * (float) Math.sin(Math.toRadians(lp.endAngle)) + halfHeight,
+						mDividerPaint);
+			}
 		}
 		
 		if(mInnerCircle != null) {
