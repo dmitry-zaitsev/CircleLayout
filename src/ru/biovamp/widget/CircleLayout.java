@@ -279,12 +279,10 @@ public class CircleLayout extends ViewGroup {
 	
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
-		/*
 		if(mLayoutMode == LAYOUT_NORMAL) {
 			super.dispatchDraw(canvas);
 			return;
 		}
-		*/
 		
 		if(mSrc == null || mDst == null || mSrc.isRecycled() || mDst.isRecycled()) {
 			return;
