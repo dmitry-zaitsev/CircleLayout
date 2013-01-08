@@ -205,6 +205,7 @@ public class CircleLayout extends ViewGroup {
 	}
 	
 	@Override
+	@SuppressWarnings("deprecation")
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		final int childs = getChildCount();
 		
@@ -239,20 +240,15 @@ public class CircleLayout extends ViewGroup {
 			final int x = (int) (radius * Math.cos(Math.toRadians(centerAngle))) + width/2;
 			final int y = (int) (radius * Math.sin(Math.toRadians(centerAngle))) + height/2;
 			
-			final int halfChildWidth = child.getMeasuredWidth();
-			final int halfChildHeight = child.getMeasuredHeight();
+			final int halfChildWidth = child.getMeasuredWidth()/2;
+			final int halfChildHeight = child.getMeasuredHeight()/2;
 			
-			final int left = x - halfChildWidth;
-			final int top = y - halfChildHeight;
-			final int right = x + halfChildWidth;
-			final int bottom = y + halfChildHeight;
+			final int left = lp.width != LayoutParams.FILL_PARENT ? x - halfChildWidth : 0;
+			final int top = lp.height != LayoutParams.FILL_PARENT ? y - halfChildHeight : 0;
+			final int right = lp.width != LayoutParams.FILL_PARENT ? x + halfChildWidth : width;
+			final int bottom = lp.height != LayoutParams.FILL_PARENT ? y + halfChildHeight : height;
 			
-			child.layout(
-						left > 0 ? left : 0,
-						top > 0 ? top : 0,
-						right < width ? right : width,
-						bottom < height ? bottom : height
-					);
+			child.layout(left, top, right, bottom);
 			
 			lp.startAngle = startAngle;
 			
@@ -290,12 +286,10 @@ public class CircleLayout extends ViewGroup {
 	
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
-		/*
 		if(mLayoutMode == LAYOUT_NORMAL) {
 			super.dispatchDraw(canvas);
 			return;
 		}
-		*/
 		
 		if(mSrc == null || mDst == null || mSrc.isRecycled() || mDst.isRecycled()) {
 			return;
