@@ -239,10 +239,20 @@ public class CircleLayout extends ViewGroup {
 			final int x = (int) (radius * Math.cos(Math.toRadians(centerAngle))) + width/2;
 			final int y = (int) (radius * Math.sin(Math.toRadians(centerAngle))) + height/2;
 			
-			final int childWidth = child.getMeasuredWidth();
-			final int childHeight = child.getMeasuredHeight();
+			final int halfChildWidth = child.getMeasuredWidth();
+			final int halfChildHeight = child.getMeasuredHeight();
 			
-			child.layout(x - childWidth/2, y - childHeight/2, x + childWidth/2, y + childHeight/2);
+			final int left = x - halfChildWidth;
+			final int top = y - halfChildHeight;
+			final int right = x + halfChildWidth;
+			final int bottom = y + halfChildHeight;
+			
+			child.layout(
+						left > 0 ? left : 0,
+						top > 0 ? top : 0,
+						right < width ? right : width,
+						bottom < height ? bottom : height
+					);
 			
 			lp.startAngle = startAngle;
 			
