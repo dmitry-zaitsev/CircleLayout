@@ -11,23 +11,25 @@ Add as Android Library to your project.
 Usage
 =====
 
-  <ru.biovamp.widget.CircleLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@android:color/white"
-      app:angleOffset="90.0">
-
-      <!-- Add here any views you want -->
-
-  </ru.biovamp.widget.CircleLayout>
+	  <ru.biovamp.widget.CircleLayout
+	      android:layout_width="match_parent"
+	      android:layout_height="match_parent"
+	      android:background="@android:color/white"
+	      app:angleOffset="90.0">
+	
+	      <!-- Add here any views you want -->
+	
+	  </ru.biovamp.widget.CircleLayout>
 
 To arrange views in nice looking pie provide this property:
-  app:layoutMode="pie"
 
-In <b>pie</b> mode some additional options available:
-<b>divider</b> - color of divider between slices of pie
-<b>innerCircle</b> - color or drawable that will be drawn in center of pie
-<b>dividerWidth</b> - width of divider between slices
+  	app:layoutMode="pie"
+
+In pie mode some additional options available:<br/>
+
+<b>divider</b> - color of divider between slices of pie<br/>
+<b>innerCircle</b> - color or drawable that will be drawn in center of pie<br/>
+<b>dividerWidth</b> - width of divider between slices<br/>
 
 License
 =======
