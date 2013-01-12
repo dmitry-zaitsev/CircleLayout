@@ -6,7 +6,9 @@ Circular layout for android.
 Installlation
 =============
 
-Add as Android Library to your project.
+Add CircleLayout as Android Library to your project.
+
+<a href="http://developer.android.com/tools/projects/projects-eclipse.html#ReferencingLibraryProject">How to add project as Android Library</a>
 
 Usage
 =====
