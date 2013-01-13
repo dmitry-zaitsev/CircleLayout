@@ -207,7 +207,7 @@ public class CircleLayout extends ViewGroup {
 		
 		int width = resolveSize(maxWidth, widthMeasureSpec);
 		int height = resolveSize(maxHeight, heightMeasureSpec);
-
+		
 		setMeasuredDimension(width, height);
 		
 		if(mSrc != null && (mSrc.getWidth() != width || mSrc.getHeight() != height)) {
@@ -425,7 +425,7 @@ public class CircleLayout extends ViewGroup {
 		mXferPaint.setXfermode(null);
 		mXferPaint.setColor(Color.BLACK);
 
-		float sweepAngle = (lp.endAngle - lp.startAngle) % 360;
+		float sweepAngle = (lp.endAngle - lp.startAngle) % 361;
 		
 		mDstCanvas.drawArc(mBounds, lp.startAngle, sweepAngle, true, mXferPaint);
 		mXferPaint.setXfermode(mXfer);
@@ -518,6 +518,11 @@ public class CircleLayout extends ViewGroup {
 		if(mCachedCanvas != null) {
 			sCanvas = canvas;
 			canvas = mCachedCanvas;
+		}
+		
+		Drawable bkg = getBackground();
+		if(bkg != null) {
+			bkg.draw(canvas);
 		}
 		
 		for(int i=0; i<childs; i++) {
