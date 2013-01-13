@@ -268,8 +268,16 @@ public class CircleLayout extends ViewGroup {
 			final float angle = 360/totalWeight * lp.weight;
 			
 			final float centerAngle = startAngle + angle/2f;
-			final int x = (int) (radius * Math.cos(Math.toRadians(centerAngle))) + width/2;
-			final int y = (int) (radius * Math.sin(Math.toRadians(centerAngle))) + height/2;
+			final int x;
+			final int y;
+			
+			if(childs > 1) {
+				x = (int) (radius * Math.cos(Math.toRadians(centerAngle))) + width/2;
+				y = (int) (radius * Math.sin(Math.toRadians(centerAngle))) + height/2;
+			} else {
+				x = width/2;
+				y = height/2;
+			}
 			
 			final int halfChildWidth = child.getMeasuredWidth()/2;
 			final int halfChildHeight = child.getMeasuredHeight()/2;
@@ -447,6 +455,10 @@ public class CircleLayout extends ViewGroup {
 	private void drawDividers(Canvas canvas, float halfWidth, float halfHeight, float radius) {
 		final int childs = getChildCount();
 		
+		if(childs < 2) {
+			return;
+		}
+		
 		for(int i=0; i<childs; i++) {
 			final View child = getChildAt(i);			
 			LayoutParams lp = layoutParams(child);			
@@ -531,6 +543,7 @@ public class CircleLayout extends ViewGroup {
 			
 			drawChild(canvas, child, lp);
 			
+			/*
 			canvas.drawLine(halfWidth, halfHeight,
 					radius * (float) Math.cos(Math.toRadians(lp.startAngle)) + halfWidth,
 					radius * (float) Math.sin(Math.toRadians(lp.startAngle)) + halfHeight,
@@ -542,7 +555,10 @@ public class CircleLayout extends ViewGroup {
 						radius * (float) Math.sin(Math.toRadians(lp.endAngle)) + halfHeight,
 						mDividerPaint);
 			}
+			*/
 		}
+		
+		drawDividers(canvas, halfWidth, halfHeight, radius);
 		
 		drawInnerCircle(canvas, halfWidth, halfHeight);
 		
