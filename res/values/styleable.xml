@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 Copyright dmitry.zaicew@gmail.com Dmitry Zaitsev
 
@@ -14,8 +15,6 @@ Copyright dmitry.zaicew@gmail.com Dmitry Zaitsev
  limitations under the License.
 -->
 
-
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     
     <declare-styleable name="CircleLayout">

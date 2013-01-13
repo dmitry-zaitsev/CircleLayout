@@ -340,7 +340,7 @@ public class CircleLayout extends ViewGroup {
 				MotionEvent cancelEvent = MotionEvent.obtain(ev);
 				cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
 				
-				cancelEvent.setLocation(mMotionTarget.getLeft(), mMotionTarget.getTop());
+				cancelEvent.offsetLocation(-mMotionTarget.getLeft(), -mMotionTarget.getTop());
 				
 				mMotionTarget.dispatchTouchEvent(cancelEvent);
 				
@@ -376,7 +376,7 @@ public class CircleLayout extends ViewGroup {
 				}
 				
 				if(startAngle <= touchAngle && endAngle >= touchAngle) {
-					ev.setLocation(child.getLeft(), child.getTop());
+					ev.offsetLocation(-child.getLeft(), -child.getTop());
 					
 					boolean dispatched = child.dispatchTouchEvent(ev);
 					
@@ -392,7 +392,7 @@ public class CircleLayout extends ViewGroup {
 				}
 			}
 		} else if(mMotionTarget != null) {
-			ev.setLocation(mMotionTarget.getLeft(), mMotionTarget.getTop());
+			ev.offsetLocation(-mMotionTarget.getLeft(), -mMotionTarget.getTop());
 			
 			mMotionTarget.dispatchTouchEvent(ev);
 			
