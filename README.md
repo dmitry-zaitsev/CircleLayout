@@ -3,6 +3,8 @@ CircleLayout
 
 Circular layout for android.
 
+![Example](https://raw.github.com/dmitry-zaitsev/CircleLayout/master/normal.jpg)
+
 Installlation
 =============
 
@@ -32,6 +34,10 @@ In pie mode some additional options available:<br/>
 <b>divider</b> - color of divider between slices of pie<br/>
 <b>innerCircle</b> - color or drawable that will be drawn in center of pie<br/>
 <b>dividerWidth</b> - width of divider between slices<br/>
+
+And here is how it will look like:
+
+![Example](https://raw.github.com/dmitry-zaitsev/CircleLayout/master/pie.jpg)
 
 License
 =======
