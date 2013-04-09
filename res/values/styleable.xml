@@ -19,7 +19,7 @@ Copyright dmitry.zaicew@gmail.com Dmitry Zaitsev
     
     <declare-styleable name="CircleLayout">
         <attr name="innerRadius" format="dimension" />
-        <attr name="divider" format="reference|color" />
+        <attr name="sliceDivider" format="reference|color" />
         <attr name="innerCircle" format="reference|color" />
         <attr name="angleOffset" format="float" />
         <attr name="layoutMode">

@@ -87,7 +87,7 @@ public class CircleLayout extends ViewGroup {
 		TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircleLayout, 0, 0);
 		
 		try {
-			int dividerColor = a.getColor(R.styleable.CircleLayout_divider, android.R.color.darker_gray);
+			int dividerColor = a.getColor(R.styleable.CircleLayout_sliceDivider, android.R.color.darker_gray);
 			mInnerCircle = a.getDrawable(R.styleable.CircleLayout_innerCircle);
 			
 			if(mInnerCircle instanceof ColorDrawable) {
@@ -351,6 +351,7 @@ public class CircleLayout extends ViewGroup {
 				cancelEvent.offsetLocation(-mMotionTarget.getLeft(), -mMotionTarget.getTop());
 				
 				mMotionTarget.dispatchTouchEvent(cancelEvent);
+				cancelEvent.recycle();
 				
 				mMotionTarget = null;
 			}
@@ -542,20 +543,6 @@ public class CircleLayout extends ViewGroup {
 			LayoutParams lp = layoutParams(child);
 			
 			drawChild(canvas, child, lp);
-			
-			/*
-			canvas.drawLine(halfWidth, halfHeight,
-					radius * (float) Math.cos(Math.toRadians(lp.startAngle)) + halfWidth,
-					radius * (float) Math.sin(Math.toRadians(lp.startAngle)) + halfHeight,
-					mDividerPaint);
-			
-			if(i == childs-1) {
-				canvas.drawLine(halfWidth, halfHeight,
-						radius * (float) Math.cos(Math.toRadians(lp.endAngle)) + halfWidth,
-						radius * (float) Math.sin(Math.toRadians(lp.endAngle)) + halfHeight,
-						mDividerPaint);
-			}
-			*/
 		}
 		
 		drawDividers(canvas, halfWidth, halfHeight, radius);
