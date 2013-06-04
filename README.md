@@ -31,7 +31,7 @@ To arrange views in nice looking pie provide this property:
 
 In pie mode some additional options available:<br/>
 
-<b>divider</b> - color of divider between slices of pie<br/>
+<b>sliceDivider</b> - color of divider between slices of pie<br/>
 <b>innerCircle</b> - color or drawable that will be drawn in center of pie<br/>
 <b>dividerWidth</b> - width of divider between slices<br/>
 
