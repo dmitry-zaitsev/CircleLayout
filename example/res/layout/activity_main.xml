@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        app:angleOffset="90"
         app:layoutMode="pie" >
 
         <View
@@ -43,8 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:visibility="gone"
-        app:angleOffset="90" >
+        android:visibility="gone" >
 
         <View
             android:layout_width="50dp"
@@ -72,6 +70,41 @@
             android:background="#ff00ff" />
     </ru.biovamp.widget.CircleLayout>
 
+    <ru.biovamp.widget.CircleLayout
+        android:id="@+id/normalWithRange"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        app:angleOffset="200"
+        app:angleRange="230" >
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#ff0000" />
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#00ff00" />
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#0000ff" />
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#ffff00" />
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#ff00ff" />
+    </ru.biovamp.widget.CircleLayout>
+    
     <Button
         android:id="@+id/switchBtn"
         android:layout_width="wrap_content"
