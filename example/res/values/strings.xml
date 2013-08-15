@@ -7,5 +7,6 @@
     
     <string name="normal">Switch to normal mode</string>
     <string name="pie">Switch to pie mode</string>
+     <string name="normalWidthRange">Switch to normal mode with angleRange</string>
 
 </resources>

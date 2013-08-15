@@ -7,7 +7,7 @@ import android.app.Activity;
 
 public class MainActivity extends Activity {
 
-	private boolean mPieMode = true;
+	private char mState = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,26 +21,42 @@ public class MainActivity extends Activity {
 		
 		final View pie = findViewById(R.id.pie);
 		final View normal = findViewById(R.id.normal);
+		final View normalWithRange = findViewById(R.id.normalWithRange);
 		
 		final Button switchBtn = (Button) findViewById(R.id.switchBtn);
 		switchBtn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				if(mPieMode) {
+				switch (mState) {
+				case 0:
+					normalWithRange.setVisibility(View.GONE);
 					pie.setVisibility(View.GONE);
 					normal.setVisibility(View.VISIBLE);
 					
-					switchBtn.setText(R.string.pie);
-					
-					mPieMode = false;
-				} else {
-					pie.setVisibility(View.VISIBLE);
+					switchBtn.setText(R.string.normalWidthRange);
+					mState ++;
+					break;
+				case 1:
+					normalWithRange.setVisibility(View.VISIBLE);
+					pie.setVisibility(View.GONE);
 					normal.setVisibility(View.GONE);
 					
-					switchBtn.setText(R.string.normal);
+					switchBtn.setText(R.string.pie);
+					mState++;
+					break;
+				case 2:				
+					normalWithRange.setVisibility(View.GONE);
+					pie.setVisibility(View.VISIBLE);
+					normal.setVisibility(View.GONE);
+
 					
-					mPieMode = true;
+					switchBtn.setText(R.string.normal);
+					mState = 0;
+					break;
+					
+				default:
+					break;
 				}
 			}
 		});

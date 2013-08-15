@@ -22,6 +22,7 @@ Copyright dmitry.zaicew@gmail.com Dmitry Zaitsev
         <attr name="sliceDivider" format="reference|color" />
         <attr name="innerCircle" format="reference|color" />
         <attr name="angleOffset" format="float" />
+        <attr name="angleRange" format="float" />
         <attr name="layoutMode">
             <enum name="normal" value="1" />
             <enum name="pie" value="2" />

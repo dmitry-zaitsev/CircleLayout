@@ -51,6 +51,8 @@ public class CircleLayout extends ViewGroup {
 	private Drawable mInnerCircle;
 	
 	private float mAngleOffset;
+	private float mAngleRange;
+	
 	private float mDividerWidth;
 	private int mInnerRadius;
 	
@@ -98,6 +100,7 @@ public class CircleLayout extends ViewGroup {
 			mDividerPaint.setColor(dividerColor);
 			
 			mAngleOffset = a.getFloat(R.styleable.CircleLayout_angleOffset, 90f);
+			mAngleRange = a.getFloat(R.styleable.CircleLayout_angleRange, 360f);
 			mDividerWidth = a.getDimensionPixelSize(R.styleable.CircleLayout_dividerWidth, 1);
 			mInnerRadius = a.getDimensionPixelSize(R.styleable.CircleLayout_innerRadius, 80);
 			
@@ -117,6 +120,7 @@ public class CircleLayout extends ViewGroup {
 		}
 	}
 	
+
 	public void setLayoutMode(int mode) {
 		mLayoutMode = mode;
 		requestLayout();
@@ -265,7 +269,7 @@ public class CircleLayout extends ViewGroup {
 			
 			final LayoutParams lp = layoutParams(child);
 			
-			final float angle = 360/totalWeight * lp.weight;
+			final float angle = mAngleRange/totalWeight * lp.weight;
 			
 			final float centerAngle = startAngle + angle/2f;
 			final int x;
@@ -364,7 +368,7 @@ public class CircleLayout extends ViewGroup {
 			
 			float angle = (float) Math.toDegrees(Math.atan2(y, x));
 			
-			if(angle < 0) angle += 360;
+			if(angle < 0) angle += mAngleRange;
 			
 			final int childs = getChildCount();
 			
@@ -372,16 +376,16 @@ public class CircleLayout extends ViewGroup {
 				final View child = getChildAt(i);
 				final LayoutParams lp = layoutParams(child);
 				
-				float startAngle = lp.startAngle % 360;
-				float endAngle = lp.endAngle % 360;
+				float startAngle = lp.startAngle % mAngleRange;
+				float endAngle = lp.endAngle % mAngleRange;
 				float touchAngle = angle;
 				
 				if(startAngle > endAngle) {
 					if(touchAngle < startAngle && touchAngle < endAngle) {
-						touchAngle += 360;
+						touchAngle += mAngleRange;
 					}
 						
-					endAngle += 360;
+					endAngle += mAngleRange;
 				}
 				
 				if(startAngle <= touchAngle && endAngle >= touchAngle) {
